@@ -9,8 +9,6 @@
 
 -behaviour(gen_cron).
 
--compile([{parse_transform, lager_transform}]).
-
 -export([start_link/3]).
 
 %% gen_server API
@@ -33,7 +31,7 @@ init([Name, Handler]) ->
 
 -spec handle_tick('force' | 'tick', #state{}) -> term().
 handle_tick(Event, #state{name=Name, hlr=Handler}) ->
-    lager:debug("~w start handler with ~w", [Name, Event]),
+    logger:debug("~w start handler with ~w", [Name, Event]),
     Handler(Event).
 
 handle_call(_Request, _From, State) ->
@@ -43,10 +41,10 @@ handle_cast(_Msg, State) ->
     {noreply, State}.
 
 handle_info({tick_monitor, {'DOWN', _, _, _, normal}}, S=#state{name=Name}) ->
-    lager:debug("~w handler finished", [Name]),
+    logger:debug("~w handler finished", [Name]),
     {noreply, S};
 handle_info({tick_monitor, {'DOWN', _, _, _, Reason}}, S=#state{name=Name}) ->
-    lager:error("~w handler finished, reason ~w", [Name, Reason]),
+    logger:error("~w handler finished, reason ~w", [Name, Reason]),
     {noreply, S};
 handle_info(_Info, State) ->
     {noreply, State}.

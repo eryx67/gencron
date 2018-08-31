@@ -233,7 +233,7 @@ infinity_test_() ->
         end,
 
     {setup,
-     fun() -> application:start(lager),
+     fun() -> application:start(logger),
               ets:new(?MODULE, [public, set, named_table])
      end,
      fun(Tab) -> ets:delete(Tab) end,
