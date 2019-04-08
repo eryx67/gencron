@@ -18,6 +18,8 @@
 %% gen_cron API
 -export([handle_tick/2]).
 
+-include("gencron.hrl").
+
 -record(state, {name, hlr}).
 
 -spec start_link(term(), integer(), fun(('force' | 'tick') -> any()))
@@ -31,7 +33,7 @@ init([Name, Handler]) ->
 
 -spec handle_tick('force' | 'tick', #state{}) -> term().
 handle_tick(Event, #state{name=Name, hlr=Handler}) ->
-    logger:debug("~w start handler with ~w", [Name, Event]),
+    ?LOG_DEBUG("~w start handler with ~w", [Name, Event]),
     Handler(Event).
 
 handle_call(_Request, _From, State) ->
@@ -41,10 +43,10 @@ handle_cast(_Msg, State) ->
     {noreply, State}.
 
 handle_info({tick_monitor, {'DOWN', _, _, _, normal}}, S=#state{name=Name}) ->
-    logger:debug("~w handler finished", [Name]),
+    ?LOG_DEBUG("~w handler finished", [Name]),
     {noreply, S};
 handle_info({tick_monitor, {'DOWN', _, _, _, Reason}}, S=#state{name=Name}) ->
-    logger:error("~w handler finished, reason ~w", [Name, Reason]),
+    ?LOG_ERROR("~w handler finished, reason ~w", [Name, Reason]),
     {noreply, S};
 handle_info(_Info, State) ->
     {noreply, State}.

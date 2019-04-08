@@ -233,8 +233,9 @@ infinity_test_() ->
         end,
 
     {setup,
-     fun() -> application:start(logger),
-              ets:new(?MODULE, [public, set, named_table])
+     fun() ->
+             application:start(logger),
+             ets:new(?MODULE, [public, set, named_table])
      end,
      fun(Tab) -> ets:delete(Tab) end,
      fun(Tab) -> {timeout, 60, {generator, F(Tab)}} end
