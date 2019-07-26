@@ -32,8 +32,8 @@ init([Name, Handler]) ->
     {ok, #state{name=Name, hlr=Handler}}.
 
 -spec handle_tick('force' | 'tick', #state{}) -> term().
-handle_tick(Event, #state{name=Name, hlr=Handler}) ->
-    ?LOG_DEBUG("~w start handler with ~w", [Name, Event]),
+handle_tick(Event, #state{name=_Name, hlr=Handler}) ->
+    %% ?LOG_DEBUG("~w start handler with ~w", [Name, Event]),
     Handler(Event).
 
 handle_call(_Request, _From, State) ->
@@ -42,8 +42,8 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
-handle_info({tick_monitor, {'DOWN', _, _, _, normal}}, S=#state{name=Name}) ->
-    ?LOG_DEBUG("~w handler finished", [Name]),
+handle_info({tick_monitor, {'DOWN', _, _, _, normal}}, S=#state{name=_Name}) ->
+    %% ?LOG_DEBUG("~w handler finished", [Name]),
     {noreply, S};
 handle_info({tick_monitor, {'DOWN', _, _, _, Reason}}, S=#state{name=Name}) ->
     ?LOG_ERROR("~w handler finished, reason ~w", [Name, Reason]),
